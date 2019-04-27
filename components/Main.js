@@ -40,20 +40,21 @@ class Main extends Component{
         if(this.state.isUpdate) {
             let updateTasks = [ ...this.state.tasks ]
             updateTasks[this.state.index] = {title: this.state.title, desc: this.state.description};       
-            this.setState({ 
+            this.setState(() => ({ 
                 tasks: updateTasks,
                 title:'', 
                 description:'',
                 isUpdate: false 
             }), async () => {
                 try {
+                    console.warn(this.state.tasks)
                     await AsyncStorage.setItem('storageTasks', JSON.stringify(this.state.tasks));
-                    
                     
                 } catch (error) {
                     // Error saving data
                 }; 
-        } }
+            })
+        }
         else {
             this.setState(prevState => ({
             tasks: [...prevState.tasks,{title:this.state.title, desc: this.state.description}],
