@@ -7,15 +7,22 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, SafeAreaView, AsyncStorage} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import AddList from './components/AddList';
 import List from './components/List';
 import {Router, Scene, Stack, Actions} from 'react-native-router-flux';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 
 
 export default class App extends Component {
+
+  renderRight() {
+    return(
+      <Icon onPress={() => Actions.AddList()} name= "ios-add" size={40} style={{color:'white', paddingRight: 16}} />
+    )
+  }
  
   render() {
     return (
@@ -27,19 +34,21 @@ export default class App extends Component {
         titleStyle={styles.title}
         navigationBarStyle={styles.navBar}
         title='To Do List'
+       
         >
 
         <Scene
         key="List"
         component={List}
         initial
-        renderRightButton={<Text onPress={ () => Actions.AddList()} >Add</Text>}
+        renderRightButton={this.renderRight()}
         >
         </Scene>
 
         <Scene
         key="AddList"
         component={AddList}
+
         >
         </Scene>
 
@@ -54,12 +63,6 @@ export default class App extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f3e5f5',
-  },
   title: {
     fontSize: 30,
     color: 'white'

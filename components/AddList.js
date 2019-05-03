@@ -100,7 +100,7 @@ class AddList extends Component{
                     value={this.state.description}
                     
                 />
-                <Button onClick = {() => this.saveToList()}/>
+                <Button text="Add" onClick = {() => this.saveToList()}/>
 
             </View>
 

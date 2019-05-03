@@ -9,6 +9,8 @@ import { Actions } from 'react-native-router-flux';
 
 const {width, height} = Dimensions.get('window');
 
+
+
 class List extends Component {
 
     state = {   
@@ -19,6 +21,8 @@ class List extends Component {
         this.retrieveData()   
 
     }
+
+    
     
     retrieveData = async () => {
         const myStorage = await AsyncStorage.getItem('storageTasks');
@@ -58,6 +62,8 @@ class List extends Component {
         }), async () => {
             try {
                 await AsyncStorage.setItem('storageTasks', JSON.stringify(this.state.tasks));
+                data.tasks = this.state.tasks
+
                 
             } catch (error) {
                 //Error saving data
@@ -85,40 +91,45 @@ class List extends Component {
 
     render() {
         return (
-            <View style={styles.card}>
-                    <FlatList
-                        data={this.state.tasks}
-                        renderItem={({item,index}) => 
-                        <View style={styles.cardItem}>
-                            <View>
-                                <Text style={styles.hr}>{item.title}</Text>
-                                <Text>{item.desc}</Text>
-                                <Text>{item.id}</Text>
-                                
-                                
-                            </View> 
-                            <View style={styles.icons}>
-                                <TouchableOpacity onPress={() => this.deleteListItem(index)}>
-                                    <Icon
-                                    name="close"
-                                    size={20} 
+            <View style={styles.container}>
+                <View style={styles.card}>
+                        <FlatList
+                            data={this.state.tasks}
+                            keyExtractor={(item, index) => index.toString()}
+                            renderItem={({item,index}) => 
+                            <View style={styles.cardItem}>
+                                <View>
+                                    <Text style={styles.hr}>{item.title}</Text>
+                                    <Text>{item.desc}</Text>
+                    
+                    
                                     
-                                />
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.updateListItem(index) }>
-                                    <Icon
-                                    name="edit"
-                                    size ={20}
+                                </View> 
+                                <View style={styles.icons}>
+                                    <TouchableOpacity onPress={() => this.deleteListItem(index)}>
+                                        <Icon
+                                        name="close"
+                                        size={20}
+                                        style ={{color: '#c0b3c2', padding:4 }}
+                                        
+                                    />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.updateListItem(index) }>
+                                        <Icon
+                                        name="edit"
+                                        size ={20}
+                                        style ={{color: '#c0b3c2', padding:4  }}
+                                        
+                                    />
+                                    </TouchableOpacity>
                                     
-                                />
-                                </TouchableOpacity>
-                                
-                            </View>
+                                </View>
 
-                        </View>
-                        }   
-                    />
+                            </View>
+                        }
+                        />
                 </View>
+            </View>
            
             
         )
@@ -128,40 +139,33 @@ class List extends Component {
 }
 const styles = StyleSheet.create( {
         container: {
-            flex: 9,
+            flex:1,
             justifyContent: "center", 
             alignItems: "center",
             width,
-        },
-        textInput: {
-            height: 40,
-            borderColor: 'gray', 
-            borderWidth: 1, 
-            width: width*0.9,
-            marginBottom: 10
-    
+            backgroundColor:"#f3e5f5"
+      
         },
         card: {
             backgroundColor: '#fff',
             flex:1,
-            width: width - 25,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            width: width * 0.9,
+            borderRadius: 10,
             shadowColor: 'rgb(50,50,50)',
             shadowOpacity: 0.3,
             shadowRadius: 5,
-            alignItems:'center'
+            alignItems:'center',
+            marginTop: 20,
+            marginBottom:20
         },
         cardItem: {
-            marginTop: 20,
-            padding: 10,
-            height:52,
+            padding:10,
             flex: 1, 
             flexDirection: 'row',
             alignItems: 'center',
             backgroundColor:'#fff',
             justifyContent: 'space-between',
-            width: width - 40,
+            width: width*0.9,
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
             shadowColor: 'rgb(50,50,50)',
