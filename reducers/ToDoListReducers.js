@@ -21,10 +21,8 @@ export default (state = INITIAL_STATE, action) => {
         return {...state, tasks: [...state.tasks, action.payload], isCreate:true, isUpdate:false };
     
     case  UPDATE_TODO_LIST:
-        const {params, index} = action.payload
-        let updateTasks = state.tasks
-        updateTasks[index] = {title: params.title, desc:params.desc }
-        return {...state, tasks: updateTasks,  isCreate:false, isUpdate:true };
+        
+        return {...state, tasks: action.payload, isCreate:false, isUpdate:true };
     
     case DELETE_TODO_LİST:
         return {...state, tasks: action.payload, isCreate:false, isUpdate:false};

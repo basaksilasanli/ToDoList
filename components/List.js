@@ -11,17 +11,21 @@ import {getToDoList, updateToDo, deleteToDo} from '../actions'
 
 const {width, height} = Dimensions.get('window');
 
+
+
 class List extends Component {
 
     state = {   
         title:"",
         description:"",
+        tasks:[]
         
     }
 
     async componentWillMount() {
-        this.props.getToDoList()
+        await this.props.getToDoList()
     }
+    
 
     deleteListItem = async (i) => {
         const array = this.props.tasks.filter((item, index) => index !== i);
@@ -38,9 +42,8 @@ class List extends Component {
                 <View style={styles.card}>
                         <FlatList
                             data={this.props.tasks}
-                            keyExtractor={(index) => index.toString()}
+                            keyExtractor={(item, index) => index.toString()}   
                             renderItem={({item,index}) => 
-                                
                                     <View style={styles.cardItem}>
                                         <View>
                                             <Text style={styles.hr}>{item.title}</Text>
@@ -56,16 +59,9 @@ class List extends Component {
                                             <TouchableOpacity onPress={() => this.updateListItem(index)}>
                                                 <Icon name="edit" size ={20} style ={{color: '#c0b3c2', padding:4  }}/>
                                             </TouchableOpacity>
-                                       
                                         </View>    
-                                
-                                        
                                     </View>   
-                            
-                                
                             }
-                       
-                        
                         />
                 </View>
             </View>

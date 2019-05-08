@@ -7,7 +7,7 @@ import { GET_TODO_LIST,
 
 export const getToDoList = () => {
     return (dispatch) => {
-        AsyncStorage.getItem('key', (err, result) => {
+        AsyncStorage.getItem('key1', (err, result) => {
             if(result != null) {
                 const array = JSON.parse(result)
                 dispatch({
@@ -30,11 +30,11 @@ export const addToDoList = (params) => {
     }
 }
 
-export const updateToDo = (params, index) => {
+export const updateToDo = (updateTasks) => {
     return(dispatch) => {
         dispatch({
             type:UPDATE_TODO_LIST,
-            payload: {params,index}
+            payload: updateTasks
         })
     }
 }
@@ -45,7 +45,7 @@ export const deleteToDo = (array) => {
             type: DELETE_TODO_LİST,
             payload: array
         });
-        AsyncStorage.setItem('key',JSON.stringify(array))
+        AsyncStorage.setItem('key1',JSON.stringify(array))
             
         
         

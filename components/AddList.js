@@ -14,7 +14,7 @@ import { addToDoList, updateToDo } from '../actions'
 
 const {width, height} = Dimensions.get('window');
 
-
+let data = []
 class AddList extends Component{
     state = {   
         title: '',
@@ -23,7 +23,7 @@ class AddList extends Component{
     }
 
     async componentDidMount() {
-        if(this.props.index>-1) {
+        if(this.props.index > -1) {
             const { title, desc } = this.props.tasks[this.props.index];
             this.setState({
                 title,
@@ -33,18 +33,20 @@ class AddList extends Component{
     }
 
     async componentWillReceiveProps(props) {
+        
+        data = this.props.tasks
+    
+        
         if(props.isCreate){
-            const array = JSON.stringify(props.tasks);
-            await AsyncStorage.setItem('key', array);
-            props.isCreate = false
+            const array = JSON.stringify(props.tasks)
+            await AsyncStorage.setItem('key1', array)
             Actions.pop();
-            Actions.refresh({ key: Math.random()})
+            
         }
         if(props.isUpdate) {
             const array = JSON.stringify(props.tasks);
-            await AsyncStorage.setItem('key', array)
+            await AsyncStorage.setItem('key1', array)
             Actions.pop()
-            Actions.refresh({ key: Math.random()})
         }
     }
 
@@ -55,7 +57,10 @@ class AddList extends Component{
         };
         
         if (this.props.index>-1) {
-            this.props.updateToDo(params, this.props.index)
+            let updateTasks = data
+            updateTasks[this.props.index] = {title: params.title, desc:params.desc }
+
+            this.props.updateToDo(updateTasks)
         }
         else {
             this.props.addToDoList(params) 
