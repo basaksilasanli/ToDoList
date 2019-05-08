@@ -7,7 +7,7 @@ import { GET_TODO_LIST,
 
 export const getToDoList = () => {
     return (dispatch) => {
-        AsyncStorage.getItem('key3', (err, result) => {
+        AsyncStorage.getItem('key7', (err, result) => {
             if(result != null) {
                 const array = JSON.parse(result)
                 dispatch({
@@ -45,7 +45,7 @@ export const deleteToDo = (array) => {
             type: DELETE_TODO_LİST,
             payload: array
         });
-        AsyncStorage.setItem('key3',JSON.stringify(array))
+        AsyncStorage.setItem('key7',JSON.stringify(array))
             
         
         

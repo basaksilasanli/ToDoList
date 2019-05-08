@@ -32,34 +32,35 @@ class AddList extends Component{
         }
     }
 
-    async componentWillReceiveProps(props) {
-        
-        if(props.isCreate){
-            const array = JSON.stringify(props.tasks)
-            await AsyncStorage.setItem('key3', array)
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // Typical usage (don't forget to compare props):
+       console.log(prevProps, prevState, snapshot)
+      }
+
+    async UNSAFE_componentWillReceiveProps(nextprops) {
+        if(nextprops.isCreate){
+            const array = JSON.stringify(nextprops.tasks)
+            await AsyncStorage.setItem('key7', array)
             Actions.pop();
         
             
         }
-        if(props.isUpdate) {
-            const array = JSON.stringify(props.tasks);
-            await AsyncStorage.setItem('key3', array)
+        if(nextprops.isUpdate) {
+            const array = JSON.stringify(nextprops.tasks)
+            await AsyncStorage.setItem('key7', array)
             Actions.pop()
             Actions.refresh({key: Math.random()})
         }
     }
 
-    saveToList = async () => {
+    saveToList = () => {
         const params = { 
             title: this.state.title,
             desc: this.state.description,
         };
-        
-        if (this.props.index>-1) {
-            let updateTasks = this.props.tasks
-            updateTasks[this.props.index] = {title: params.title, desc:params.desc }
 
-            this.props.updateToDo(updateTasks)
+        if (this.props.index>-1) {
+            this.props.updateToDo({index:this.props.index,title: params.title, desc:params.desc })
         }
         else {
             this.props.addToDoList(params) 
@@ -84,7 +85,7 @@ class AddList extends Component{
                     value={this.state.description}
                     
                 />
-                <Button text="Add" onClick = { async () => { this.saveToList()}
+                <Button text="Add" onClick={() => { this.saveToList()}
                 }/>
 
             </View>
@@ -115,8 +116,12 @@ const styles = StyleSheet.create( {
 
 
 const mapStateToProps = ({ ToDoListResponse }) => {
-    return { tasks: ToDoListResponse.tasks, isCreate: ToDoListResponse.isCreate,
-    isUpdate: ToDoListResponse.isUpdate }
+    console.log(ToDoListResponse)
+    return { 
+        tasks: ToDoListResponse.tasks, 
+        isCreate: ToDoListResponse.isCreate,
+        isUpdate: ToDoListResponse.isUpdate 
+    }
 };
 
 export default connect(mapStateToProps, { addToDoList , updateToDo})(AddList);
