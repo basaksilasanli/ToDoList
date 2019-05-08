@@ -34,19 +34,18 @@ class AddList extends Component{
 
     async componentWillReceiveProps(props) {
         
-        data = this.props.tasks
-    
-        
         if(props.isCreate){
             const array = JSON.stringify(props.tasks)
-            await AsyncStorage.setItem('key1', array)
+            await AsyncStorage.setItem('key3', array)
             Actions.pop();
+        
             
         }
         if(props.isUpdate) {
             const array = JSON.stringify(props.tasks);
-            await AsyncStorage.setItem('key1', array)
+            await AsyncStorage.setItem('key3', array)
             Actions.pop()
+            Actions.refresh({key: Math.random()})
         }
     }
 
@@ -57,7 +56,7 @@ class AddList extends Component{
         };
         
         if (this.props.index>-1) {
-            let updateTasks = data
+            let updateTasks = this.props.tasks
             updateTasks[this.props.index] = {title: params.title, desc:params.desc }
 
             this.props.updateToDo(updateTasks)
