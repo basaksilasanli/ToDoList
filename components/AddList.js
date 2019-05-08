@@ -8,79 +8,59 @@ import {
 } from 'react-native';
 import Button from './Button';
 import { Actions } from 'react-native-router-flux';
-import data from './const';
 
+import { connect } from 'react-redux'
+import { addToDoList, updateToDo } from '../actions'
 
 const {width, height} = Dimensions.get('window');
 
 
 class AddList extends Component{
-    
     state = {   
         title: '',
-        description: '',
-        tasks:[],
-        isUpdate:false,
-        index:0
-    }
-    componentWillMount() {
-        this.setState({
-            tasks: data.tasks,
-            title: data.title,
-            description:data.description,
-            isUpdate: data.isUpdate,
-            index: data.index
-        })
+        description: '' ,
+       
     }
 
-    saveToList = async () => {  
-
-        if(this.state.isUpdate) {
-            let updateTasks = [ ...this.state.tasks ]
-            updateTasks[this.state.index] = {title: this.state.title, desc: this.state.description};       
-            this.setState(() => ({ 
-                tasks: updateTasks,
-                title:'', 
-                description:'',
-                isUpdate: false 
-            }), async () => {
-                try {
-                
-                    await AsyncStorage.setItem('storageTasks', JSON.stringify(this.state.tasks));
-                    data.tasks = this.state.tasks
-                    data.title = "",
-                    data.description = "",
-                    data.isUpdate = false
-                    Actions.pop()
-                    Actions.refresh({ key: Math.random() })
-                    
-                    
-                } catch (error) {
-                    // Error saving data
-                }; 
-            })
+    async componentDidMount() {
+        if(this.props.index>-1) {
+            const { title, desc } = this.props.tasks[this.props.index];
+            this.setState({
+                title,
+                description:desc
+            });
         }
+    }
 
+    async componentWillReceiveProps(props) {
+        if(props.isCreate){
+            const array = JSON.stringify(props.tasks);
+            await AsyncStorage.setItem('key', array);
+            props.isCreate = false
+            Actions.pop();
+            Actions.refresh({ key: Math.random()})
+        }
+        if(props.isUpdate) {
+            const array = JSON.stringify(props.tasks);
+            await AsyncStorage.setItem('key', array)
+            Actions.pop()
+            Actions.refresh({ key: Math.random()})
+        }
+    }
+
+    saveToList = async () => {
+        const params = { 
+            title: this.state.title,
+            desc: this.state.description,
+        };
+        
+        if (this.props.index>-1) {
+            this.props.updateToDo(params, this.props.index)
+        }
         else {
-            this.setState(prevState => ({
-            tasks: [...prevState.tasks,{title:this.state.title, desc: this.state.description}],
-            title: '',
-            description:''
+            this.props.addToDoList(params) 
 
-        }), async () => {
-            try {
-                await AsyncStorage.setItem('storageTasks', JSON.stringify(this.state.tasks));
-                data.tasks = this.state.tasks
-                Actions.pop()
-                Actions.refresh({ key: Math.random() })
-                
-            } catch (error) {
-                // Error saving data
-            }
-        })
         }
-        
-        
     }
 
     render() {
@@ -100,7 +80,8 @@ class AddList extends Component{
                     value={this.state.description}
                     
                 />
-                <Button text="Add" onClick = {() => this.saveToList()}/>
+                <Button text="Add" onClick = { async () => { this.saveToList()}
+                }/>
 
             </View>
 
@@ -128,4 +109,10 @@ const styles = StyleSheet.create( {
 
 });
 
-export default AddList;
+
+const mapStateToProps = ({ ToDoListResponse }) => {
+    return { tasks: ToDoListResponse.tasks, isCreate: ToDoListResponse.isCreate,
+    isUpdate: ToDoListResponse.isUpdate }
+};
+
+export default connect(mapStateToProps, { addToDoList , updateToDo})(AddList);

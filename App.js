@@ -7,11 +7,18 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import AddList from './components/AddList';
 import List from './components/List';
 import {Router, Scene, Stack, Actions} from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import ReduxThunk from 'redux-thunk';
+import logger from 'redux-logger'
+
+import reducers from './reducers';
+
 
 
 
@@ -23,11 +30,11 @@ export default class App extends Component {
       <Icon onPress={() => Actions.AddList()} name= "ios-add" size={40} style={{color:'white', paddingRight: 16}} />
     )
   }
- 
   render() {
+    const store = createStore(reducers,{},applyMiddleware(ReduxThunk,logger))
     return (
-
-      <Router>
+      <Provider store={store}>
+        <Router>
 
         <Stack 
         key='root'
@@ -58,7 +65,8 @@ export default class App extends Component {
         </Stack>
 
       </Router>
-    );
+     </Provider>
+     );
   }
 }
 
